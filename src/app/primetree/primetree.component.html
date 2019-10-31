@@ -1,0 +1,98 @@
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<!-- <p-treeTable [value]="files" [columns]="cols" dataKey="name" [(contextMenuSelection)]="selectedNode" [contextMenu]="cm">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns">
+                {{col.header}}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+        <tr [ttContextMenuRow]="rowNode">
+            <td *ngFor="let col of columns; let i = index">
+                <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
+                {{rowData[col.field]}}
+            </td>
+        </tr>
+    </ng-template>
+</p-treeTable> -->
+
+<p-treeTable #tt [value]="files" [columns]="cols" dataKey="name" [(contextMenuSelection)]="selectedNode" [contextMenu]="cm">
+    <ng-template pTemplate="caption">
+        <div style="text-align: right">
+            <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+            <input type="text" pInputText size="50" placeholder="Global Filter" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of cols">
+                {{col.header}}
+            </th>
+        </tr>
+        <tr>
+            <th *ngFor="let col of cols">
+                <input pInputText type="text" (input)="tt.filter($event.target.value, col.field, col.filterMatchMode)">
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+        <tr [ttContextMenuRow]="rowNode">
+            <!-- <td *ngFor="let col of cols; let i = index">
+                <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
+                {{rowData[col.field]}}
+            </td> -->
+            <td *ngFor="let col of columns; let i = index" ttEditableColumn [ngClass]="{'ui-toggler-column': i === 0}">
+                <p-treeTableToggler [rowNode]="rowNode" *ngIf="i === 0"></p-treeTableToggler>
+                <p-treeTableCellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="rowData[col.field]" [ngStyle]="{'width': i == 0 ? '90%': '100%'}">
+                    </ng-template>
+                    <ng-template pTemplate="output">{{rowData[col.field]}}</ng-template>
+                </p-treeTableCellEditor>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td [attr.colspan]="cols.length">No data found.</td>
+        </tr>
+    </ng-template>
+</p-treeTable>
+
+
+
+<!-- <p-dialog header="Title" [(visible)]="displaydialogue"> -->
+
+    <p-dialog header="Add" [(visible)]="displaydialogue" [modal]="true" [responsive]="true" [style]="{width: '350px', minWidth: '200px'}"
+[maximizable]="true" [baseZIndex]="10000" >
+
+
+        <form [formGroup]="Addform" (ngSubmit)="addChild(Addform.value)" #f="ngForm">
+          <!-- <h2 style="margin-left: 80px">Add</h2> -->
+
+          <div class="form-group">
+            <label> Name<span style="color: red;">*</span></label>
+            <input formControlName="name"  class="form-control" type="text" >
+
+          </div>
+          <div class="form-group">
+            <label>Size<span style="color: red;">*</span></label>
+            <input formControlName="size"  class="form-control" type="text" >
+
+          </div>
+          <div class="form-group">
+              <label>Type<span style="color: red;">*</span></label>
+              <input formControlName="type"  class="form-control" type="text" >
+
+            </div>
+
+          <div class="form-group">
+            <button  type="submit" style="width: 100px" class="form-control btn btn-primary">Save</button>
+          </div>
+        </form>
+
+</p-dialog>
+
+<p-contextMenu #cm [model]="items"></p-contextMenu>
